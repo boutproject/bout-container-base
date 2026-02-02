@@ -58,7 +58,7 @@ jobs:
             MPI=${{ matrix.mpi }}
             TYPE=${{ matrix.type }}
             OPENMP=${{ matrix.config.openmp }}
-          context: .
+          context: main/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
