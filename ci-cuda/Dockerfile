@@ -1,6 +1,5 @@
 # BOUT++ CUDA-enabled Docker container
 # This Dockerfile builds BOUT++ with CUDA support using Spack for dependency management
-# Fixes issue #3233 by using updated fmt library version
 
 FROM docker.io/nvidia/cuda:12.6.1-devel-ubuntu22.04 AS base
 LABEL maintainer="BOUT++ Development Team"
@@ -67,16 +66,10 @@ RUN useradd -m -s /bin/bash boutuser && \
 USER boutuser
 WORKDIR /home/boutuser
 
-# Clone and build BOUT++
 ARG BOUT_URL=https://github.com/boutproject/BOUT-dev.git
-ARG BOUT_COMMIT=master
+ARG BOUT_COMMIT=next
 
-RUN git clone ${BOUT_URL} BOUT-dev && \
-    cd BOUT-dev && \
-    git checkout ${BOUT_COMMIT} && \
-    git submodule update --init --recursive
-
-WORKDIR /home/boutuser/BOUT-dev
+WORKDIR /home/boutuser
 
 # Activate Spack environment and configure BOUT++ with CUDA
 USER root
@@ -88,52 +81,32 @@ RUN . /spack/share/spack/setup-env.sh && \
     spack load umpire && \
     spack load netcdf-cxx4 && \
     spack load fftw && \
-    chown -R boutuser:boutuser /home/boutuser/BOUT-dev
+    chown -R boutuser:boutuser /home/boutuser
 
-USER boutuser
-
-# Configure BOUT++ with CUDA support
-# CUDA_ARCH is set via build arg (default: 80 for Ampere/A100)
-RUN . /spack/share/spack/setup-env.sh && \
-    spack env activate /spack-env && \
-    spack load cmake fmt raja umpire netcdf-cxx4 fftw && \
-    cmake -S . -B build \
-      -DCMAKE_INSTALL_PREFIX=/opt/bout++ \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DBOUT_ENABLE_CUDA=ON \
-      -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
-      -DCUDA_ARCH="compute_${CUDA_ARCH},code=sm_${CUDA_ARCH}" \
-      -DBOUT_ENABLE_RAJA=ON \
-      -DBOUT_ENABLE_UMPIRE=ON \
-      -DBOUT_USE_SYSTEM_FMT=ON \
-      -DBOUT_GENERATE_FIELDOPS=OFF \
-      -DBOUT_ENABLE_PYTHON=ON \
-      || (cat /home/boutuser/BOUT-dev/build/CMakeFiles/CMake{Output,Error}.log ; exit 1)
-
-# Build BOUT++
-RUN . /spack/share/spack/setup-env.sh && \
-    spack env activate /spack-env && \
-    spack load cmake fmt raja umpire netcdf-cxx4 fftw && \
-    cmake --build build -j$(nproc)
-
-# Install BOUT++
-USER root
-RUN . /spack/share/spack/setup-env.sh && \
-    spack env activate /spack-env && \
-    spack load cmake && \
-    cmake --install build
-
-# Create a helper script to activate the Spack environment
-RUN echo '#!/bin/bash\n\
+RUN echo '# Setup spack for BOUT++\n\
 . /spack/share/spack/setup-env.sh\n\
 spack env activate /spack-env\n\
 spack load cmake fmt raja umpire netcdf-cxx4 fftw\n\
-exec "$@"' > /usr/local/bin/bout-env.sh && \
-    chmod +x /usr/local/bin/bout-env.sh
+' > /usr/local/bin/bout-env.bash
 
 USER boutuser
-WORKDIR /home/boutuser/BOUT-dev
 
-# Default command activates Spack environment and drops to bash
-ENTRYPOINT ["/usr/local/bin/bout-env.sh"]
-CMD ["/bin/bash"]
+RUN git clone ${BOUT_URL} BOUT-dev && \
+    cd BOUT-dev && \
+    git checkout ${BOUT_COMMIT} && \
+    . /usr/local/bin/bout-env.bash && \
+    git submodule update --init --recursive && \
+    cmake -S . \
+            -B build \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DBOUT_ENABLE_RAJA=on \
+            -DBOUT_ENABLE_UMPIRE=on \
+            -DBOUT_ENABLE_CUDA=on \
+            -DCMAKE_CUDA_ARCHITECTURES=80 \
+            -DCUDA_ARCH=compute_80,code=sm_80 \
+            -DBOUT_ENABLE_WARNINGS=off \
+            -DBOUT_USE_SYSTEM_FMT=on && \
+      cd build && \
+      make -j 2 build-check && \
+      make check && cd ../.. && rm -rf BOUT-dev

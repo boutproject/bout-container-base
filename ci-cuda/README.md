@@ -70,8 +70,6 @@ docker build --build-arg CUDA_ARCH=70 -t bout-cuda:volta .
 # For Hopper (H100)
 docker build --build-arg CUDA_ARCH=90 -t bout-cuda:hopper .
 
-# Or using the build script
-./build.sh --cuda-arch 70
 ```
 
 Common CUDA architectures:
