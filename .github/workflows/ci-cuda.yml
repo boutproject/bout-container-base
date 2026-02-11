@@ -1,4 +1,4 @@
-name: CI Fedora
+name: CI CUDA
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
             MPI=${{ matrix.mpi }}
             TYPE=${{ matrix.type }}
             OPENMP=${{ matrix.config.openmp }}
-          context: ci-fedora/
+          context: ci-cuda/
           push: true
           shm-size: '256M'
           tags: ${{ steps.meta.outputs.tags }}
