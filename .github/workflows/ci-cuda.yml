@@ -20,9 +20,6 @@ jobs:
       contents: read
       packages: write
 
-    strategy:
-      fail-fast: true
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -39,14 +36,12 @@ jobs:
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=boutdev-cuda
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
         with:
-          build-args: |
-            MPI=${{ matrix.mpi }}
-            TYPE=${{ matrix.type }}
-            OPENMP=${{ matrix.config.openmp }}
           context: ci-cuda/
           push: true
           shm-size: '256M'
