@@ -62,3 +62,27 @@ spack env activate /spack-env\n\
 spack load cmake fmt raja umpire netcdf-cxx4 fftw\n\
 ' > /usr/local/bin/bout-env.bash && \
     chmod +x /usr/local/bin/bout-env.bash
+
+# Validate the image by building and testing BOUT++
+ARG BOUT_URL=https://github.com/boutproject/BOUT-dev.git
+ARG BOUT_COMMIT=next
+
+RUN git clone ${BOUT_URL} BOUT-dev && \
+    cd BOUT-dev && \
+    git checkout ${BOUT_COMMIT} && \
+    . /usr/local/bin/bout-env.bash && \
+    git submodule update --init --recursive && \
+    cmake -S . \
+            -B build \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DBOUT_ENABLE_RAJA=on \
+            -DBOUT_ENABLE_UMPIRE=on \
+            -DBOUT_ENABLE_CUDA=on \
+            -DCMAKE_CUDA_ARCHITECTURES=80 \
+            -DCUDA_ARCH=compute_80,code=sm_80 \
+            -DBOUT_ENABLE_WARNINGS=off \
+            -DBOUT_USE_SYSTEM_FMT=on && \
+      cd build && \
+      make -j 2 build-check && \
+      make check && cd ../.. && rm -rf BOUT-dev
