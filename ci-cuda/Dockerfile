@@ -76,6 +76,7 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
             -B build \
             -DCMAKE_C_COMPILER=gcc \
             -DCMAKE_CXX_COMPILER=g++ \
+            -DCMAKE_CUDA_HOST_COMPILER=gcc \
             -DBOUT_ENABLE_RAJA=on \
             -DBOUT_ENABLE_UMPIRE=on \
             -DBOUT_ENABLE_CUDA=on \
