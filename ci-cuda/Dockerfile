@@ -44,7 +44,7 @@ RUN \
  spack add blt@0.6.2 &&\
  spack add "umpire@2024.07.0+cuda~examples+numa+openmp cuda_arch=${CUDA_ARCH}" &&\
  spack add "raja@2024.07.0+cuda~examples~exercises+openmp cuda_arch=${CUDA_ARCH}" &&\
- spack add fmt@11.0.2 &&\
+ spack add fmt@10.2.1 &&\
  spack add 'netcdf-cxx4@4.3.1 ^mpich' &&\
  spack add 'fftw@3.3.10 ^mpich' &&\
  spack external find --not-buildable &&\
@@ -63,9 +63,24 @@ spack load cmake fmt raja umpire netcdf-cxx4 fftw\n\
 ' > /usr/local/bin/bout-env.bash && \
     chmod +x /usr/local/bin/bout-env.bash
 
-# Validate the image by building and testing BOUT++
+# Install Python packages required by BOUT++
+RUN pip3 install --no-cache-dir \
+    "Jinja2>=3.1.4" \
+    "numpy>=2.0.0" \
+    "scipy>=1.14.1" \
+    "netcdf4>=1.7.1" \
+    "matplotlib>=3.7.0" \
+    "Cython>=3.0.0" \
+    "boutdata>=0.3.0" \
+    "zoidberg>=0.2.2"
+
+# Validate: build BOUT++ (requires --gpus all when running this stage)
+# Usage: docker build --target validate --build-arg CUDA_ARCH=<arch> ci-cuda/
+FROM setup-spack AS validate
+
 ARG BOUT_URL=https://github.com/boutproject/BOUT-dev.git
 ARG BOUT_COMMIT=next
+ARG CUDA_ARCH=80
 
 RUN git clone ${BOUT_URL} BOUT-dev && \
     cd BOUT-dev && \
@@ -80,8 +95,8 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
             -DBOUT_ENABLE_RAJA=on \
             -DBOUT_ENABLE_UMPIRE=on \
             -DBOUT_ENABLE_CUDA=on \
-            -DCMAKE_CUDA_ARCHITECTURES=80 \
-            -DCUDA_ARCH=compute_80,code=sm_80 \
+            -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
+            -DCUDA_ARCH=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH} \
             -DBOUT_ENABLE_WARNINGS=off \
             -DBOUT_USE_SYSTEM_FMT=on && \
       cd build && \
