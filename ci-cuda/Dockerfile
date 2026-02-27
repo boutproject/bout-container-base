@@ -42,9 +42,9 @@ RUN \
  spack env activate /spack-env &&\
  spack add cmake@3.24: &&\
  spack add blt@0.6.2 &&\
- spack add "umpire@2024.07.0+cuda~examples+numa+openmp cuda_arch=${CUDA_ARCH}" &&\
- spack add "raja@2024.07.0+cuda~examples~exercises+openmp cuda_arch=${CUDA_ARCH}" &&\
- spack add fmt@10.2.1 &&\
+ spack add "umpire@2025.12.0+cuda~examples+numa+openmp cuda_arch=${CUDA_ARCH}" &&\
+ spack add "raja@2025.12.1+cuda~examples~exercises+openmp cuda_arch=${CUDA_ARCH}" &&\
+ spack add fmt@12.1.0 &&\
  spack add 'netcdf-cxx4@4.3.1 ^mpich' &&\
  spack add 'fftw@3.3.10 ^mpich' &&\
  spack external find --not-buildable &&\
