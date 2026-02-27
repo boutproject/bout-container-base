@@ -2,7 +2,7 @@
 # Provides Spack-managed CUDA toolchain for BOUT-dev CI
 # BOUT-dev CI handles cloning/building BOUT++ itself
 
-FROM docker.io/nvidia/cuda:12.6.1-devel-ubuntu22.04 AS base
+FROM docker.io/nvidia/cuda:13.1.1-devel-ubuntu24.04 AS base
 LABEL maintainer="BOUT++ Development Team"
 USER root
 
