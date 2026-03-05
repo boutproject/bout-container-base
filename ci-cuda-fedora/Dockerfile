@@ -36,21 +36,7 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
     export MKL_NUM_THREADS=1 && \
     export NUMEXPR_NUM_THREADS=1 && \
     export OMP_NUM_THREADS=1 && \
-    export PATH=$(ls /usr/local/cuda-*/bin):$PATH && \
-    echo $PATH && \
-    echo cmake -S . \
-            -B build \
-            -DCMAKE_C_COMPILER=gcc \
-            -DCMAKE_CXX_COMPILER=g++ \
-            -DCMAKE_CUDA_HOST_COMPILER=gcc \
-            -DBOUT_ENABLE_RAJA=on \
-            -DBOUT_ENABLE_UMPIRE=on \
-            -DBOUT_ENABLE_CUDA=on \
-            -DCMAKE_CUDA_COMPILER=$(ls /usr/local/cuda-*/bin/nvcc) \
-            -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
-            -DCUDA_ARCH=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH} \
-            -DBOUT_ENABLE_WARNINGS=off \
-            -DBOUT_USE_SYSTEM_FMT=on && \
+    export PATH=/usr/local/cuda-13.1/bin:$PATH && \
     cmake -S . \
             -B build \
             -DCMAKE_C_COMPILER=gcc \
@@ -59,7 +45,7 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
             -DBOUT_ENABLE_RAJA=on \
             -DBOUT_ENABLE_UMPIRE=on \
             -DBOUT_ENABLE_CUDA=on \
-            -DCMAKE_CUDA_COMPILER=$(ls /usr/local/cuda-*/bin/nvcc) \
+            -DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.1/bin/nvcc \
             -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
             -DCUDA_ARCH=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH} \
             -DBOUT_ENABLE_WARNINGS=off \
