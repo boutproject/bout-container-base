@@ -47,7 +47,7 @@ jobs:
             MPI=${{ matrix.mpi }}
             TYPE=${{ matrix.type }}
             OPENMP=${{ matrix.config.openmp }}
-          context: ci-fedora-cuda/
+          context: ci-cuda-fedora/
           push: true
           shm-size: '256M'
           tags: ${{ steps.meta.outputs.tags }}

@@ -21,7 +21,7 @@ RUN useradd test -G wheel -p '$6$MoHfQDiMU5ajgDMm$9FAMLxMflKwQCZ.sJBNG6wLGnPeySV
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ARG BOUT_URL=https://github.com/boutproject/BOUT-dev.git
-ARG BOUT_COMMIT=next
+ARG BOUT_COMMIT=c++20
 ARG CUDA_ARCH=80
 
 RUN git clone ${BOUT_URL} BOUT-dev && \
