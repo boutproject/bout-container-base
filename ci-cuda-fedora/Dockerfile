@@ -5,11 +5,10 @@ RUN echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     echo "minrate=10M" >> /etc/dnf/dnf.conf && \
     export FORCE_COLUMNS=200 && \
     rpm -q dnf5 || (time dnf -y install dnf5 ; time dnf clean all ) ; \
-    dnf5 install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
-    dnf5 config-manager addrepo --from-repofile=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/$(uname -m)/cuda-fedora42.repo && \
-    dnf5 clean all && \
-    dnf5 config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig && \
-    dnf5 -y install cuda-toolkit xorg-x11-drv-nvidia-cuda && \
+    time dnf5 -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
+    time dnf5 -y config-manager addrepo --from-repofile=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/$(uname -m)/cuda-fedora42.repo && \
+    time dnf5 -y config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig && \
+    time dnf5 -y install cuda-toolkit xorg-x11-drv-nvidia-cuda && \
     time dnf5 -y install dnf5-plugins cmake python3-zoidberg python3-natsort python3-boututils git-core wget && \
     time dnf5 copr enable -y davidsch/fixes4bout ; \
     time dnf5 -y upgrade && \
