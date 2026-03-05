@@ -36,6 +36,7 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
     export MKL_NUM_THREADS=1 && \
     export NUMEXPR_NUM_THREADS=1 && \
     export OMP_NUM_THREADS=1 && \
+    export PATH=/usr/local/cuda-*/bin:$PATH && \
     cmake -S . \
             -B build \
             -DCMAKE_C_COMPILER=gcc \
@@ -44,7 +45,6 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
             -DBOUT_ENABLE_RAJA=on \
             -DBOUT_ENABLE_UMPIRE=on \
             -DBOUT_ENABLE_CUDA=on \
-            -DCMAKE_CUDA_COMPILER=/usr/local/cuda-*/bin/nvcc \
             -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
             -DCUDA_ARCH=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH} \
             -DBOUT_ENABLE_WARNINGS=off \
