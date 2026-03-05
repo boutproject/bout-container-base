@@ -27,6 +27,15 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
     cd BOUT-dev && \
     git checkout ${BOUT_COMMIT} && \
     git submodule update --init --recursive --recommend-shallow && \
+    . /etc/profile.d/modules.sh && \
+    module load mpi/openmpi-x86_64 && \
+    export OMPI_MCA_rmaps_base_oversubscribe=yes && \
+    export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe && \
+    export TRAVIS=true && \
+    export FLEXIBLAS=NETLIB && \
+    export MKL_NUM_THREADS=1 && \
+    export NUMEXPR_NUM_THREADS=1 && \
+    export OMP_NUM_THREADS=1 && \
     cmake -S . \
             -B build \
             -DCMAKE_C_COMPILER=gcc \
