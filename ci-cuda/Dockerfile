@@ -44,7 +44,6 @@ RUN \
  spack add blt@0.6.2 &&\
  spack add "umpire@2024.07.0+cuda~examples+numa+openmp cuda_arch=${CUDA_ARCH}" &&\
  spack add "raja@2024.07.0+cuda~examples~exercises+openmp cuda_arch=${CUDA_ARCH}" &&\
- spack add fmt@10.2.1 &&\
  spack add 'netcdf-cxx4@4.3.1 ^mpich' &&\
  spack add 'fftw@3.3.10 ^mpich' &&\
  spack external find --not-buildable &&\
@@ -59,7 +58,7 @@ ENV PATH="${SPACK_ROOT}/bin:${PATH}"
 RUN echo '#!/bin/bash\n\
 . /spack/share/spack/setup-env.sh\n\
 spack env activate /spack-env\n\
-spack load cmake fmt raja umpire netcdf-cxx4 fftw\n\
+spack load cmake raja umpire netcdf-cxx4 fftw\n\
 ' > /usr/local/bin/bout-env.bash && \
     chmod +x /usr/local/bin/bout-env.bash
 
@@ -98,7 +97,6 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
             -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} \
             -DCUDA_ARCH=compute_${CUDA_ARCH},code=sm_${CUDA_ARCH} \
             -DBOUT_ENABLE_WARNINGS=off \
-            -DBOUT_USE_SYSTEM_FMT=on && \
       cd build && \
       make -j 2 build-check && \
       make check && cd ../.. && rm -rf BOUT-dev
