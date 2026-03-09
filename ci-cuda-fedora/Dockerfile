@@ -8,7 +8,7 @@ RUN echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     time dnf5 -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
     time dnf5 -y config-manager addrepo --from-repofile=https://developer.download.nvidia.com/compute/cuda/repos/fedora42/$(uname -m)/cuda-fedora42.repo && \
     time dnf5 -y config-manager setopt cuda-fedora42-$(uname -m).exclude=nvidia-driver,nvidia-modprobe,nvidia-persistenced,nvidia-settings,nvidia-libXNVCtrl,nvidia-xconfig && \
-    time dnf5 -y install cuda-toolkit xorg-x11-drv-nvidia-cuda gcc15-c++ && \
+    time dnf5 -y install cuda-toolkit xorg-x11-drv-nvidia-cuda gcc14-c++ && \
     time dnf5 -y install dnf5-plugins cmake python3-zoidberg python3-natsort python3-boututils git-core wget && \
     time dnf5 copr enable -y davidsch/fixes4bout ; \
     time dnf5 -y upgrade && \
@@ -39,9 +39,9 @@ RUN git clone ${BOUT_URL} BOUT-dev && \
     export PATH=/usr/local/cuda-13.1/bin:$PATH && \
     cmake -S . \
             -B build \
-            -DCMAKE_C_COMPILER=gcc-15 \
-            -DCMAKE_CXX_COMPILER=g++-15 \
-            -DCMAKE_CUDA_HOST_COMPILER=gcc-15 \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
+            -DCMAKE_CUDA_HOST_COMPILER=gcc-14 \
             -DBOUT_ENABLE_RAJA=on \
             -DBOUT_ENABLE_UMPIRE=on \
             -DBOUT_ENABLE_CUDA=on \
