@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:rawhide
+FROM registry.fedoraproject.org/fedora:44
 LABEL maintainer="BOUT++ Development Team"
 
 RUN echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
