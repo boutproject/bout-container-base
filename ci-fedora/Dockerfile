@@ -22,7 +22,7 @@ RUN useradd test -G wheel -p '$6$MoHfQDiMU5ajgDMm$9FAMLxMflKwQCZ.sJBNG6wLGnPeySV
 USER test
 WORKDIR /home/test
 
-RUN git clone https://github.com/boutproject/BOUT-dev && \
+RUN git clone https://github.com/boutproject/BOUT-dev --depth 1 && \
     cd BOUT-dev && \
     git checkout next && \
     sed -i .ci_fedora.sh -e '/cp -a \/tmp/d' && \
