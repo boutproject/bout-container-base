@@ -6,7 +6,7 @@ RUN echo "install_weak_deps=False" >> /etc/dnf/dnf.conf && \
     rpm -q dnf5 || (time dnf -y install dnf5 ; time dnf clean all ) && \
     time dnf5 -y install dnf5-plugins cmake git-core wget python3-pytest python3-pytest-xdist && \
     wget https://github.com/boutproject/BOUT-dev/raw/refs/heads/next/requirements.txt && \
-    time dnf5 -y install $(for f in $(grep -o '^[^=><]*' requirements.txt ) ;  do echo "python3dist($f)"  ; done) && \
+    time dnf5 -y install $(for f in $(grep -o '^[^=><]*' requirements.txt ) | tr '[:upper:]' '[:lower:]' ;  do echo "python3dist($f)"  ; done) && \
     rm requirements.txt && \
     time dnf5 copr enable -y davidsch/fixes4bout && \
     time dnf5 -y upgrade && \
